@@ -1,6 +1,7 @@
 from Animal import lion, antelope
 from random import random
 from Tkinter import *
+from ttk import *
 import Generation
 import tkMessageBox
 import Interrupt
@@ -16,7 +17,7 @@ def PrintGrid(grid, rows, cols):
             # add all the units in list to the canvas
             anigrid.create_text(a*11, b*11, text = str(grid[a+1][b+1]))
 
-        
+
 # a method to initiate the grid with lions and antelopes
 def newGrid (grid, rows, cols):
     """A method to initiate the grid with lions and antelopes"""
@@ -26,7 +27,7 @@ def newGrid (grid, rows, cols):
     grid = []
     for a in range (rows+2):
         grid.append(list(" "*(cols+2)))
-    
+
     # get the seperate ratios
     empt = float(emptent.get())
     ln = float(lionent.get())
@@ -38,7 +39,7 @@ def newGrid (grid, rows, cols):
     mul = totspace/totrat
     lions = int(mul*ln)
     antes = int(mul*ant)
-    
+
     # enter the lions
     for a in range(lions):
         # generate random indexes
@@ -52,9 +53,9 @@ def newGrid (grid, rows, cols):
             while str(grid[rind][cind]) != " ":
                 rind = int(random()*rows)+1
                 cind = int(random()*cols)+1
-                
+
             grid[rind][cind] = lion()
-            
+
         else:
             grid[rind][cind] = lion()
 
@@ -71,9 +72,9 @@ def newGrid (grid, rows, cols):
             while str(grid[rind][cind]) != " ":
                 rind = int(random()*rows)+1
                 cind = int(random()*cols)+1
-                
+
             grid[rind][cind] = antelope()
-            
+
         else:
             grid[rind][cind] = antelope()
 
@@ -127,32 +128,32 @@ def makeGrid(gridln, rows):
 
     return grid
 
-    
+
 def main():
     """This method co-ordinates the main methods for the actual grid"""
     # catch errors
-    try:      
+    try:
         # set grid size, get the values from the entry boxes
         rows = int(rowent.get())
         cols = int(colent.get())
         grid = []
         grid = newGrid(grid, rows, cols)
-            
-        # enter how many genrations it should run, if nothing is entered
+
+        # enter how many generations it should run, if nothing is entered
         # gen stays -1 and the generations loop runs indefinately
         gen = -1
         run = genent.get()
         if run:
             gen = int(run)
-            
+
         # print the initial grid
         PrintGrid(grid, rows, cols)
 
         temp = open("record.txt", 'w')
         temp.write("")
         temp.close()
-        
-        # run the generation  
+
+        # run the generation
         grid = Generation.run(gen, grid, rows, cols, anigrid, inter, rec, feat)
     # display an error message box
     except ValueError:
@@ -163,23 +164,28 @@ def main():
          pass
     except:
         tkMessageBox.showerror(title = "Error", message = "Unknown error:\nPlease try again")
-        
+
 if __name__ == "__main__":
     # create a new interrupt object to stop the loop
     inter = Interrupt.interrupt()
     rec = Record.rec()
     feat = Record.rec()
-    """Build the GUI window"""
     # build the GUI window here
     # main frame
     root = Tk()
     root.title("CellularAutomata")
 
+    # style it
+    style = Style()
+    style.theme_use('clam')
+
+    style.configure("TLabel", padding=10)
+
     # make an interface frame
     inframe = Frame(root)
 
     # define size of the grid labels/entry boxes
-    sizelabel = Label(inframe, text = "Size:")
+    sizelabel = Label(inframe, text = "Size:", style="TLabel")
     rowlabel = Label(inframe, text = "Rows:")
     collabel = Label(inframe, text = "Columns:")
     rowent = Entry(inframe, width = 10)
@@ -211,13 +217,13 @@ if __name__ == "__main__":
     featr = Checkbutton (inframe, text = "Run with features", command = feat.pressed)
 
     #put the widgets in the frame
-    sizelabel.grid(row = 0, column = 0, columnspan = 2)
+    sizelabel.grid(row = 0, column = 0)
     rowlabel.grid(row = 1, column = 0)
     rowent.grid(row = 1, column = 1)
     collabel.grid(row = 2, column = 0)
     colent.grid(row = 2, column = 1)
 
-    ratlabel.grid(row = 3, column = 0, columnspan = 2)
+    ratlabel.grid(row = 3, column = 0)
     emptlabel.grid(row = 4, column = 0)
     emptent.grid(row = 4, column = 1)
     lionlabel.grid(row = 5, column = 0)
@@ -225,12 +231,12 @@ if __name__ == "__main__":
     antlabel.grid(row = 6, column = 0)
     antent.grid(row = 6, column = 1)
 
-    runlabel.grid(row = 7, column = 0, columnspan = 2)
+    runlabel.grid(row = 7, column = 0)
     genlabel.grid(row = 8, column = 0)
     genent.grid(row = 8, column = 1)
 
     stopb.grid(row = 9, column = 0, sticky = N+E+S+W)
-    runb.grid(row = 9, column = 1, sticky = N+E+S+W) 
+    runb.grid(row = 9, column = 1, sticky = N+E+S+W)
 
     recrd.grid(row = 10, column = 0, columnspan = 2)
     run.grid(row = 11, column = 0, columnspan = 2)
