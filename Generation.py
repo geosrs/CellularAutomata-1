@@ -1,6 +1,5 @@
 from Animal import lion, antelope
 from random import random
-from threading import Timer
 
 def compress(gridstr):
     comprsd = ""
@@ -33,7 +32,6 @@ def record(grid):
 def run(grid, features, recordgrid):
     """ Run a generation of animals in the grid
     """
-
     for a in range(grid.rows):
         for b in range(grid.columns):
             cell = grid.get(a+1, b+1)

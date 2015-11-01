@@ -1,7 +1,7 @@
 from Tkinter import *
 from ttk import *
 import tkMessageBox
-from checkbox import checkbox
+import checkbox
 
 class caframe(Frame):
     """ Builds a tkinter window for the cellular automata
@@ -9,10 +9,9 @@ class caframe(Frame):
 
     def __init__(self, parent, startrun, runrecording, exit):
         Frame.__init__(self, parent)
-
-        self.rec = checkbox()
-        self.feat = checkbox()
-        self.inter = checkbox()
+        self.inter = checkbox.checkbox()
+        self.rec = checkbox.checkbox()
+        self.feat = checkbox.checkbox()
 
         # register the validation command
         vcmd = (self.register(self.onValidate),
@@ -42,7 +41,7 @@ class caframe(Frame):
         # define buttons
         # the stop button sets the state of the interrupt object to false
         # so that the generation loop stops
-        self.stopb = Button(self, text = "Stop", command = self.inter.pressed)
+        self.stopb = Button(self, text = "Stop", command=self.inter.pressed)
         self.runb = Button(self, text = "Run", command = startrun)
         self.exitb = Button(self, text = "Exit", command = exit)
 
@@ -118,24 +117,22 @@ class caframe(Frame):
         """
         return self.genent.get()
 
-    def record(self):
-        """ Return the recording state
+    def interrupt(self):
+        """ Returns the interrupt state
         """
-        return self.rec.state
+        return self.inter.getState()
 
     def features(self):
-        """ Return the features state
+        """ Returns the features state
         """
-        return self.feat.state
+        return self.feat.getState()
 
-    def interrupt(self):
-        """ Return the interrupt state
+    def recording(self):
+        """ Returns the recording state
         """
-        return self.inter.state
+        return self.rec.getState()
 
     def reset(self):
         """ Reset the checkboxes
         """
-        self.rec.state = False
-        self.feat.state = False
-        self.inter.state = False
+        self.inter.reset()

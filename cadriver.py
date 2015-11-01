@@ -4,6 +4,7 @@ import Generation
 import tkMessageBox
 from caframe import caframe
 from cagrid import cagrid
+import checkbox
 
 def PrintGrid(grid):
     """ A method to print the grid to the screen
@@ -27,7 +28,7 @@ def PrintGrid(grid):
                 cellimage = PhotoImage(file="img/young_antelope.gif")
 
             images.append(cellimage)
-            anigrid.create_image(a*20, b*20, anchor=NW, image = cellimage)
+            anigrid.create_image(b*20, a*20, anchor=NW, image = cellimage)
     # update the canvas to make it display the new grid
     anigrid.update()
 
@@ -42,7 +43,6 @@ def runrecording():
     layout = recd.readline().split(" ")
     rows = int(layout[0])
     cols = int(layout[1])
-    ext = False
     for line in recd:
         # decode the line
         decode = ""
@@ -54,10 +54,9 @@ def runrecording():
                 decode+=a
 
         ngrid = cagrid(rows, cols, 0, 0 ,0 , decode)
-        anigrid.after(200, PrintGrid(ngrid))
+        anigrid.after(100, PrintGrid(ngrid))
 
-        ext = inframe.interrupt()
-        if ext:
+        if inframe.interrupt():
             break
 
     recd.close()
@@ -82,60 +81,60 @@ def startrun():
     """ Start the simulation
     """
     # catch errors
-    # try:
-    # set grid size, get the values from the entry boxes
-    # reset the checkboxes
-    inframe.reset()
-    rows = int(inframe.rows())
-    cols = int(inframe.columns())
-    empty = float(inframe.empty())
-    lions = float(inframe.lions())
-    antelopes = float(inframe.antelopes())
-    grid = cagrid(rows, cols, empty, lions, antelopes, False)
+    try:
+        inframe.reset()
+        # set grid size, get the values from the entry boxes
+        # reset the checkboxes
+        rows = int(inframe.rows())
+        cols = int(inframe.columns())
+        empty = float(inframe.empty())
+        lions = float(inframe.lions())
+        antelopes = float(inframe.antelopes())
+        grid = cagrid(rows, cols, empty, lions, antelopes, False)
 
-    # enter how many generations it should run, if nothing is entered
-    # gen stays -1 and the generations loop runs indefinately
-    gen = -1
-    run = inframe.generations()
-    if run:
-        gen = int(run)
+        # enter how many generations it should run, if nothing is entered
+        # gen stays -1 and the generations loop runs indefinately
+        gen = -1
+        run = inframe.generations()
+        if run:
+            gen = int(run)
 
-    # print the initial grid
-    PrintGrid(grid)
+        # print the initial grid
+        PrintGrid(grid)
 
-    temp = open("record.txt", 'w')
-    temp.write(str(rows) + " " + str(cols) + "\n")
-    temp.close()
+        temp = open("record.txt", 'w')
+        temp.write(str(rows) + " " + str(cols) + "\n")
+        temp.close()
 
-    # run the generation
-    stop = 0
-    ext = False
-    # the generation runs until "gen" or indefinately
-    # and while the user has not pressed stop
-    while stop!=gen and not ext:
-        grid = Generation.run(grid, inframe.features(), inframe.record())
+        # run the generation
+        stop = 0
+        ext = False
+        # the generation runs until "gen" or indefinately
+        # and while the user has not pressed stop
+        while stop!=gen and not ext:
+            grid = Generation.run(grid, inframe.features(), inframe.recording())
 
-        # the canvas is only changed after a period of time
-        anigrid.after(100, PrintGrid(grid))
+            # the canvas is only changed after a period of time
+            anigrid.after(100, PrintGrid(grid))
 
-        # increment the loop counter
-        stop+=1
-        # check whether the stop button has been pressed
-        ext = inframe.interrupt()
+            # increment the loop counter
+            stop+=1
+            # check whether the stop button has been pressed
+            ext = inframe.interrupt()
 
-    finished(grid)
+        finished(grid)
     # display an error message box
-    # except ValueError:
-    #     tkMessageBox.showerror(title = "Error",
-    #                             message = "Please enter only numbers")
-    # except IndexError:
-    #     tkMessageBox.showerror(title = "Error",
-    #                             message = "Please enter positive numbers")
-    # except TclError:
-    #      pass
-    # except:
-    #     tkMessageBox.showerror(title = "Error",
-    #                             message = "Unknown error:\nPlease try again")
+    except ValueError:
+        tkMessageBox.showerror(title = "Error",
+                                message = "Please enter only numbers")
+    except IndexError:
+        tkMessageBox.showerror(title = "Error",
+                                message = "Please enter positive numbers")
+    except TclError:
+         pass
+    except:
+        tkMessageBox.showerror(title = "Error",
+                                message = "Unknown error:\nPlease try again")
 
 def exitsim():
     """ close the window
@@ -152,8 +151,13 @@ if __name__ == "__main__":
     style = Style()
     style.theme_use('clam')
 
+    features = checkbox.checkbox()
+
     # make an interface frame
-    inframe = caframe(root, startrun, runrecording, exitsim)
+    inframe = caframe(root,
+                    startrun,
+                    runrecording,
+                    exitsim)
 
     # define canvas
     anigrid = Canvas(root,

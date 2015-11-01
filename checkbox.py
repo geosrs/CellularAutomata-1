@@ -7,8 +7,17 @@ class checkbox(object):
         """
         self.state = False
 
-    # when it is pressed it changes to true
     def pressed(self):
         """ Toggle the checkbox state
         """
         self.state = not self.state
+
+    def getState(self):
+        """ Return the state
+        """
+        return self.state
+
+    def reset(self):
+        """ Reset the state to false
+        """
+        self.state = False
