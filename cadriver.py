@@ -11,10 +11,10 @@ def PrintGrid(grid):
     """
     # clear the grid/canvas
     anigrid.delete(ALL)
-    images = {'L': PhotoImage(file="img/lion.gif"),
-                'l': PhotoImage(file="img/young_lion.gif"),
-                'A': PhotoImage(file="img/antelope.gif"),
-                'a': PhotoImage(file="img/young_antelope.gif"),
+    images = {'L': PhotoImage(file="img/small_lion.gif"),
+                'l': PhotoImage(file="img/small_young_lion.gif"),
+                'A': PhotoImage(file="img/small_antelope.gif"),
+                'a': PhotoImage(file="img/small_young_antelope.gif"),
                 ' ': None}
     a = 0
     for row in grid.grid:
@@ -26,8 +26,7 @@ def PrintGrid(grid):
                     # get the image depending on the cell
                     cellimage = images[str(animal)]
 
-                    anigrid.create_image((b-0.8)*20.0,
-                                        (a-0.8)*20.0,
+                    anigrid.create_image(b*4, a*4,
                                         anchor=NW,
                                         image = cellimage)
                 b+=1
