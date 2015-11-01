@@ -32,14 +32,18 @@ class cagrid:
         # rebuild from a recording
         else:
             i=0
-            rw = []
+            rw = [' ']
+            self.grid.append(list(' '*(cols+1)))
+            # iterate through each char in the recorded line
             for a in recording:
                 rw.append(a)
                 i+=1
-                if i == (rows+2):
+                # at the end of a column go to next row
+                if i == (cols-1):
                     self.grid.append(rw)
-                    rw=[]
+                    rw=[' ']
                     i=0
+
 
     def get(self, row, column):
         """ Return the cell at specific coordinates
@@ -55,6 +59,9 @@ class cagrid:
         """ Get the surrounding objects in one string
             for comparison with the centre object
         """
+        # adjust so to count from the corner
+        a-=1
+        b-=1
         # get the object, throw it in a string and add it to the string
         return (str(self.grid[a][b])+
                 str(self.grid[a][b+1])+

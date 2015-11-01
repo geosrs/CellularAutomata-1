@@ -11,24 +11,27 @@ def PrintGrid(grid):
     """
     # clear the grid/canvas
     anigrid.delete(ALL)
-    images = []
-    for a in range(grid.rows):
-        for b in range(grid.columns):
-            # get the image depending on the cell
-            cell = str(grid.get(a+1, b+1))
-            # cell = cell.upper()
-            cellimage = None
-            if cell == "L":
-                cellimage = PhotoImage(file="img/lion.gif")
-            elif cell == "l":
-                cellimage = PhotoImage(file="img/young_lion.gif")
-            elif cell == "A":
-                cellimage = PhotoImage(file="img/antelope.gif")
-            elif cell == "a":
-                cellimage = PhotoImage(file="img/young_antelope.gif")
+    images = {'L': PhotoImage(file="img/lion.gif"),
+                'l': PhotoImage(file="img/young_lion.gif"),
+                'A': PhotoImage(file="img/antelope.gif"),
+                'a': PhotoImage(file="img/young_antelope.gif"),
+                ' ': None}
+    a = 0
+    for row in grid.grid:
+        b = 0
+        # skip the empty first row
+        if a>0:
+            for animal in row:
+                if b>0:
+                    # get the image depending on the cell
+                    cellimage = images[str(animal)]
 
-            images.append(cellimage)
-            anigrid.create_image(b*20, a*20, anchor=NW, image = cellimage)
+                    anigrid.create_image((b-0.8)*20.0,
+                                        (a-0.8)*20.0,
+                                        anchor=NW,
+                                        image = cellimage)
+                b+=1
+        a+=1
     # update the canvas to make it display the new grid
     anigrid.update()
 
@@ -43,6 +46,7 @@ def runrecording():
     layout = recd.readline().split(" ")
     rows = int(layout[0])
     cols = int(layout[1])
+
     for line in recd:
         # decode the line
         decode = ""
@@ -77,6 +81,36 @@ def finished(grid):
     tkMessageBox.showinfo(title = "Finished",
                     message = "  Lions: "+str(lions)+"\n Antelopes: "+str(ants))
 
+def firstRecording(grid):
+    """ Record the first iteration of the grid
+    """
+    temp = open("record.txt", 'w')
+    temp.write(str(grid.rows) + " " + str(grid.columns) + "\n")
+    temp.close()
+
+    line = ""
+    for a in range(1, grid.rows+1):
+        for b in range(1, grid.columns+1):
+            # add all the units in one string
+            line+=(str(grid.get(a, b)))
+
+    cline = ""
+    no = 0
+    for a in line:
+        if " " == a:
+            no+=1
+        elif no!=0:
+            cline+=(str(no)+a)
+            no = 0
+        else:
+            cline+=a
+    if no!=0:
+        cline+=(str(no))
+    recfl = open ("record.txt", 'a')
+    recfl.write(cline+"\n")
+
+    recfl.close()
+
 def startrun():
     """ Start the simulation
     """
@@ -101,10 +135,8 @@ def startrun():
 
         # print the initial grid
         PrintGrid(grid)
-
-        temp = open("record.txt", 'w')
-        temp.write(str(rows) + " " + str(cols) + "\n")
-        temp.close()
+        # record the initial grid
+        firstRecording(grid)
 
         # run the generation
         stop = 0
