@@ -5,32 +5,28 @@ import tkMessageBox
 from caframe import caframe
 from cagrid import cagrid
 import checkbox
+import time
 
 def PrintGrid(grid):
     """ A method to print the grid to the screen
     """
     # clear the grid/canvas
     anigrid.delete(ALL)
-    images = {'L': PhotoImage(file="img/small_lion.gif"),
-                'l': PhotoImage(file="img/small_young_lion.gif"),
-                'A': PhotoImage(file="img/small_antelope.gif"),
-                'a': PhotoImage(file="img/small_young_antelope.gif"),
-                ' ': None}
-    a = 0
-    for row in grid.grid:
-        b = 0
-        # skip the empty first row
-        if a>0:
-            for animal in row:
-                if b>0:
-                    # get the image depending on the cell
-                    cellimage = images[str(animal)]
+    images = {'4': "red",
+                '3': "#ff9900",
+                '2': "#333300",
+                '1': "#666633",
+                '0': '#00ff00'}
 
-                    anigrid.create_image(b*4, a*4,
-                                        anchor=NW,
-                                        image = cellimage)
-                b+=1
-        a+=1
+    for a in range(1, len(grid.grid)-1):
+        row = grid.grid[a]
+        for b in range(1, len(row)-1):
+            animal = row[b]
+            # get the image depending on the cell
+            cellimage = images[str(animal)]
+            anigrid.create_rectangle(4+b*4, 4+a*4, b*4+8, a*4+8,
+                outline=cellimage, fill=cellimage, width=1)
+
     # update the canvas to make it display the new grid
     anigrid.update()
 
@@ -50,8 +46,8 @@ def runrecording():
         # decode the line
         decode = ""
         for a in line:
-            if a.isdigit():
-                space = " "*int(a)
+            if a == '0':
+                space = "0"*int(a)
                 decode+=space
             else:
                 decode+=a
@@ -72,9 +68,9 @@ def finished(grid):
     ants = 0
     for row in range(grid.rows):
         for col in range(grid.columns):
-            if str(grid.get(row,col)).upper() == "L":
+            if grid.get(row,col) > 2:
                 lions+=1
-            elif str(grid.get(row,col)).upper() == "A":
+            elif grid.get(row,col) > 0:
                 ants+=1
 
     tkMessageBox.showinfo(title = "Finished",
@@ -115,6 +111,7 @@ def startrun():
     """
     # catch errors
     try:
+        time1 = time.time()
         inframe.reset()
         # set grid size, get the values from the entry boxes
         # reset the checkboxes
@@ -154,6 +151,9 @@ def startrun():
             ext = inframe.interrupt()
 
         finished(grid)
+
+        time2 = time.time()
+        print (time2-time1)
     # display an error message box
     except ValueError:
         tkMessageBox.showerror(title = "Error",
@@ -163,7 +163,8 @@ def startrun():
                                 message = "Please enter positive numbers")
     except TclError:
          pass
-    except:
+    except Exception, e:
+        print e
         tkMessageBox.showerror(title = "Error",
                                 message = "Unknown error:\nPlease try again")
 

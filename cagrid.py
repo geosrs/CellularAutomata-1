@@ -1,5 +1,6 @@
 from Animal import lion, antelope
 from random import random
+from collections import Counter
 
 class cagrid:
 
@@ -19,7 +20,7 @@ class cagrid:
             # iterate through the cells
             # +2 edge for emmigration
             for row in range(rows+2):
-                self.grid.append(list(" "*(cols+2)))
+                self.grid.append([0]*(cols+2))
                 for col in range(cols+2):
                     # random number in the total range
                     num = random()*totrat
@@ -32,16 +33,16 @@ class cagrid:
         # rebuild from a recording
         else:
             i=0
-            rw = [' ']
-            self.grid.append(list(' '*(cols+1)))
+            rw = [0]
+            self.grid.append([0]*(cols+1))
             # iterate through each char in the recorded line
             for a in recording:
-                rw.append(a)
+                rw.append(int(a))
                 i+=1
                 # at the end of a column go to next row
                 if i == (cols-1):
                     self.grid.append(rw)
-                    rw=[' ']
+                    rw=[0]
                     i=0
 
 
@@ -71,6 +72,39 @@ class cagrid:
                 str(self.grid[a+2][b])+
                 str(self.grid[a+2][b+1])+
                 str(self.grid[a+2][b+2]))
+
+    def areaTotal(self, a, b):
+        """ Sum the totals in the area
+        """
+        # adjust so to count from the corner
+        a-=1
+        b-=1
+        # get the object, throw it in a string and add it to the string
+        return (self.grid[a][b]+
+                self.grid[a][b+1]+
+                self.grid[a][b+2]+
+                self.grid[a+1][b]+
+                self.grid[a+1][b+2]+
+                self.grid[a+2][b]+
+                self.grid[a+2][b+1]+
+                self.grid[a+2][b+2])
+
+    def areaCounter(self, a, b):
+        """ Get the surrounding objects in a counter
+            for comparison with the centre object
+        """
+        # adjust so to count from the corner
+        a-=1
+        b-=1
+        # get the items, set in a counter object
+        return Counter([str(self.grid[a][b]),
+                str(self.grid[a][b+1]),
+                str(self.grid[a][b+2]),
+                str(self.grid[a+1][b]),
+                str(self.grid[a+1][b+2]),
+                str(self.grid[a+2][b]),
+                str(self.grid[a+2][b+1]),
+                str(self.grid[a+2][b+2])])
 
     def age(self, a, b):
         """ If the cell is an animal, age it

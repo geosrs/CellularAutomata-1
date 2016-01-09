@@ -20,16 +20,31 @@ class antelope:
         """Get the age"""
         return self.Age
 
-    
-    def __str__(self):
-        """Returns a string-representation of the antelope
-            as an adult or baby"""
+    def compare(self):
+        """ return integer representation of the antelope """
         if self.Adult:
-            #adult is capital A
-            return "A"
-        else:
-            #baby is small a
-            return "a"
+            return 2
+        return 1
+
+    def __str__(self):
+        """ Returns a representation of the antelope
+            as an adult or baby. 1 for baby, 9 for adult
+        """
+        if self.Adult:
+            #adult is 9
+            return '2'
+        #baby is 1
+        return '1'
+
+    def __cmp__(self, other):
+        if self.Adult:
+            return cmp(2, other)
+        return cmp(1, other)
+
+    def __add__(self, other):
+        if self.Adult:
+            return 2 + other
+        return 1 + other
 
 # the lion class
 class lion:
@@ -48,15 +63,26 @@ class lion:
             self.Adult = True
         if self.Age == 21:
             self.Age = -2
-        
+
     def getAge(self):
         """Get the age"""
         return self.Age
 
-    def __str__(self):
-        """Returns a string-representation of the lion
-            as an adult or baby"""
+    def compare(self):
+        """ return integer representation of the lion """
         if self.Adult:
-            return "L"
-        else:
-            return "l"
+            return 4
+        return 3
+
+    def __str__(self):
+        """ Returns a string-representation of the lion
+            as an adult or baby. 3 for baby, 4 for adult.
+        """
+        if self.Adult:
+            return '4'
+        return '3'
+
+    def __cmp__(self, other):
+        if self.Adult:
+            return cmp(4, other)
+        return cmp(3, other)
